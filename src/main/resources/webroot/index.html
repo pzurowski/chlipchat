@@ -6,16 +6,31 @@
     <script src="webjars/jquery/1.11.2/jquery.min.js"></script>
     <script src="webjars/sockjs-client/0.3.4/sockjs.min.js"></script>
     <script src="vertx-eventbus.js"></script>
+    <script src="bind.min.js"></script>
     <script src="chlipchat.js"></script>
+    <link href="font-lato.css" rel="stylesheet" type="text/css"/>
+    <link href="simplegrid.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
 
-<div style="float: right;">
-    <img src="logo.png" alt="logo"/>
+<div class="grid grid-pad">
+    <div class="col-3-12">
+        <div class="user-list" style="height:90vh;">
+            <ul id="user-list"></ul>
+        </div>
+    </div>
+    <div class="col-9-12">
+        <div class="chat" style="height:90vh;">
+
+            <ul id="chat" style="height:88%; overflow-y:scroll;">
+            </ul>
+
+            <textarea id="input" placeholder ="Type your message" rows="3" onkeydown="send(event)"></textarea>
+
+        </div>
+    </div>
 </div>
-<div id="chat" class="inset" style="overflow-y:scroll; height:400px;"></div>
-<input id="input" type="text" onkeydown="send(event)" class="inset">
 
 </body>
 </html>
