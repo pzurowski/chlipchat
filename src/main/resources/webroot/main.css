@@ -44,6 +44,7 @@ ul {
     background: #BFBFBF;
     padding: 5px;
     margin-right: 5px;
+    overflow: auto;
 }
 
 .message-data {
@@ -71,4 +72,9 @@ ul {
     resize: none;
     border: none;
     background: white;
+}
+
+pre {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
 }

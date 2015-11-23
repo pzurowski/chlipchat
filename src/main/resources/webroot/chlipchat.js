@@ -95,14 +95,13 @@ function notify(err, msg) {
 function receive(err, msg) {
     var messages = Array.isArray(msg.body) ? msg.body : [msg.body];
     messages.forEach(function (message) {
-        chatWindow.append('<li><div class="message-data"><p>' + escape(message.login) + '</p> <p>' + timestamp(message.instant) + '</p></div><div class="message">' + escape(message.payload) + '</div></li>');
+        chatWindow.append('<li><div class="message-data"><p>' + escape(message.login) + '</p><p>' + timestamp(message.instant) + '</p></div><div class="message"><pre>' + escape(message.payload) + '</pre></div></li>');
     });
     chatWindow.scrollTop(chatWindow[0].scrollHeight);
 }
 
 function send(event) {
-    //TODO: allow shift+enter line break console.log(!event.shiftKey && event.keyCode == 13 ? 'SEND' : 'NOT')
-    if (event.keyCode == 13 || event.which == 13) {
+    if (!event.shiftKey && (event.keyCode == 13 || event.which == 13)) {
         var message = inputWindow.val();
         if (message.length > 0) {
             eb.publish(ADDRESS_TO_SERVER, {payload: message, login: login, handlerID: handlerID});
