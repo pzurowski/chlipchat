@@ -17,6 +17,7 @@ Notification.requestPermission(function (permission) {});
 $(document).ready(function () {
     chatWindow = $('#chat');
     inputWindow = $('#input');
+    inputWindow.keypress(function(event) { return send(event); });
     inputWindow.focus();
 });
 
@@ -102,12 +103,14 @@ function receive(err, msg) {
 function send(event) {
     //TODO: allow shift+enter line break console.log(!event.shiftKey && event.keyCode == 13 ? 'SEND' : 'NOT')
     if (event.keyCode == 13 || event.which == 13) {
-        var message = inputWindow.val().replace(/^\s+|\s+$/g, "");
+        var message = inputWindow.val();
         if (message.length > 0) {
             eb.publish(ADDRESS_TO_SERVER, {payload: message, login: login, handlerID: handlerID});
             inputWindow.val('');
         }
+        return false;
     }
+    return true;
 }
 
 function timestamp(instant) {
