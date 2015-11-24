@@ -44,31 +44,41 @@ var data = Bind({
     }
 });
 
+var cmdHandlers = {
+    handlerID: handlerIDHandler,
+    userJoined: userJoinedHandler,
+    userLeft: userLeftHandler,
+    _default_: function(err,msg){
+        console.log('unknown Message type', err, msg);
+    }
+};
+
 eb.onopen = function () {
     eb.registerHandler(ADDRESS_TO_CLIENT, receive);
     eb.registerHandler(ADDRESS_TO_CLIENT, notify);
     eb.registerHandler(ADDRESS_MAINTENANCE, function (err, msg) {
-        if(msg.body.cmd === 'handlerID') {
+        (cmdHandlers[msg.body.cmd] || cmdHandlers._default_)(err,msg);
+    });
+};
+        function handlerIDHandler(err,msg){
             handlerID = msg.body.handlerID;
             eb.send(ADDRESS_TO_SERVER, {cmd: 'user-list', handlerID: msg.body.handlerID, login: login}, function (err, msg) {
                 data.users = msg.body;
             });
             eb.send(ADDRESS_TO_SERVER, {cmd: 'init', handlerID: msg.body.handlerID, login: login}, receive);
         }
-        if(msg.body.cmd === 'userJoined') {
+        function userJoinedHandler(err,msg){
             data.users.push({ login: msg.body.login, handlerID: msg.body.handlerID });
             chatWindow.append('<li><p>User <strong>' + escape(msg.body.login) + '</strong> joined</p></li>');
             chatWindow.scrollTop(chatWindow[0].scrollHeight);
         }
-        if(msg.body.cmd === 'userLeft') {
+        function userLeftHandler(err,msg){
             data.users = data.users.filter(function (e) {
                 return e.handlerID != msg.body.handlerID;
             });
             chatWindow.append('<li><p>User <strong>' + escape(msg.body.login) + '</strong> left</p></li>');
             chatWindow.scrollTop(chatWindow[0].scrollHeight);
         }
-    });
-};
 
 eb.onclose = function () {
     alert('Connection to server closed, please reload');
