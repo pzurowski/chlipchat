@@ -1,3 +1,5 @@
+(function (){
+
 var login = window.prompt('Welcome to ChlipChat!\nLogin?');
 var handlerID;
 
@@ -136,3 +138,5 @@ function escape(s) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
+
+})();
