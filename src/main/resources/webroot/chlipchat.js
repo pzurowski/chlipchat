@@ -3,10 +3,10 @@
 var login = window.prompt('Welcome to ChlipChat!\nLogin?');
 var handlerID;
 
-const ADDRESS_TO_SERVER = "chat.to.server";
-const ADDRESS_TO_CLIENT = "chat.to.client";
-const ADDRESS_MAINTENANCE = "chat.MAINTENANCE";
-const LOCALE = 'en-GB';
+var ADDRESS_TO_SERVER = "chat.to.server";
+var ADDRESS_TO_CLIENT = "chat.to.client";
+var ADDRESS_MAINTENANCE = "chat.MAINTENANCE";
+var LOCALE = 'en-GB';
 
 var eb = new EventBus("/eventbus/");
 
