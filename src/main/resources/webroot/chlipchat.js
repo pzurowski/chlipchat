@@ -10,17 +10,15 @@ var LOCALE = 'en-GB';
 
 var eb = new EventBus("/eventbus/");
 
-var chatWindow;
-var inputWindow;
-
 var Notification = window.Notification || window.mozNotification || window.webkitNotification;
 Notification.requestPermission(function (permission) {});
 
+    var chat = new Chat();
+    var input = new Input();
 $(document).ready(function () {
-    chatWindow = $('#chat');
-    inputWindow = $('#input');
-    inputWindow.keypress(function(event) { return send(event); });
-    inputWindow.focus();
+    chat.setElement($('#chat'));
+    input.setElement($('#input'));
+    input.focus();
 });
 
 var window_focus;
@@ -71,15 +69,13 @@ eb.onopen = function () {
         }
         function userJoinedHandler(err,msg){
             data.users.push({ login: msg.body.login, handlerID: msg.body.handlerID });
-            chatWindow.append('<li><p>User <strong>' + escape(msg.body.login) + '</strong> joined</p></li>');
-            chatWindow.scrollTop(chatWindow[0].scrollHeight);
+            chat.addUserAction(msg.body.login, 'joined');
         }
         function userLeftHandler(err,msg){
             data.users = data.users.filter(function (e) {
                 return e.handlerID != msg.body.handlerID;
             });
-            chatWindow.append('<li><p>User <strong>' + escape(msg.body.login) + '</strong> left</p></li>');
-            chatWindow.scrollTop(chatWindow[0].scrollHeight);
+            chat.addUserAction(msg.body.login, 'left');
         }
 
 eb.onclose = function () {
@@ -107,22 +103,55 @@ function notify(err, msg) {
 function receive(err, msg) {
     var messages = Array.isArray(msg.body) ? msg.body : [msg.body];
     messages.forEach(function (message) {
-        chatWindow.append('<li><div class="message-data"><p>' + escape(message.login) + '</p><p>' + timestamp(message.instant) + '</p></div><div class="message"><pre>' + escape(message.payload) + '</pre></div></li>');
+        chat.addMessage(message);
     });
-    chatWindow.scrollTop(chatWindow[0].scrollHeight);
+    chat.updateScroll();
 }
 
-function send(event) {
-    if (!event.shiftKey && (event.keyCode == 13 || event.which == 13)) {
-        var message = inputWindow.val();
+    function Chat() {
+    }
+    Chat.prototype.setElement = function setElement($el) {
+        this.$el = $el;
+    };
+    Chat.prototype.addUserAction = function addUserAction(user, action) {
+        if (this.$el) {
+            this.$el.append('<li><p>User <strong>' + escape(user) + '</strong> ' + action + '</p></li>');
+        }
+        this.updateScroll();
+    };
+    Chat.prototype.updateScroll = function updateScroll() {
+        if (this.$el) {
+            this.$el.scrollTop(this.$el[0].scrollHeight);
+        }
+    };
+    Chat.prototype.addMessage = function (message) {
+        if (this.$el) {
+            this.$el.append('<li><div class="message-data"><p>' + escape(message.login) + '</p><p>' + timestamp(message.instant) + '</p></div><div class="message"><pre>' + escape(message.payload) + '</pre></div></li>');
+        }
+    };
+
+    function Input() {
+    }
+    Input.prototype.setElement = function setElement($el) {
+        this.$el = $el;
+        this.$el.keypress(this.send.bind(this));
+    };
+    Input.prototype.focus = function focus() {
+        if (this.$el) {
+            this.$el.focus();
+        }
+    };
+    Input.prototype.send = function send(event) {
+        if (this.$el && !event.shiftKey && (event.keyCode == 13 || event.which == 13)) {
+            var message = this.$el.val();
         if (message.length > 0) {
             eb.publish(ADDRESS_TO_SERVER, {payload: message, login: login, handlerID: handlerID});
-            inputWindow.val('');
+            this.$el.val('');
         }
         return false;
     }
     return true;
-}
+    };
 
 function timestamp(instant) {
     return new Date(instant).toLocaleString(locale());
