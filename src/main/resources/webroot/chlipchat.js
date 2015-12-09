@@ -172,7 +172,7 @@
     }
 
     function escape(s) {
-        return s.replace(/&/g, '&amp;')
+        return s && s.replace(/&/g, '&amp;')
             .replace(/"/g, '&quot;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
