@@ -135,7 +135,7 @@
     };
     Chat.prototype.addMessage = function (message) {
         if (this.$el) {
-            this.$el.append('<li><div class="message-data"><p>' + escape(message.login) + '</p><p>' + timestamp(message.instant) + '</p></div><div class="message"><pre>' + linker.link(escape(message.payload)) + '</pre></div></li>');
+            this.$el.append('<li><div class="message-data"><p>' + escape(message.login) + '</p><p>' + timestamp(message.instant) + '</p></div><div class="message">' + linker.link(escape(message.payload)) + '</div></li>');
         }
     };
 
