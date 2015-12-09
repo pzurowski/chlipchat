@@ -64,6 +64,21 @@ ul {
     font-size: 11px;
 }
 
+.message {
+    margin-left: 25px;
+}
+
+.message-data p {
+    overflow: visible;
+    height:13px;
+}
+
+.message-data p:first-child:first-letter {
+    float: left;
+    text-transform:capitalize;
+    font:41px "Courier New",Courier,monospace;
+}
+
 .chat textarea {
     padding: 10px;
     margin-top: 10px;
